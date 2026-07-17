@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In Tem Ngân Hàng Máu</title>
+    <style>
+        :root {
+            --blood-dark: #4a0000;
+            --blood-red: #cc0000;
+            --blood-light: #ff1a1a;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            /* Phong cách Ombre Ngân hàng máu */
+            background: linear-gradient(135deg, var(--blood-dark), var(--blood-red), var(--blood-light));
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .app-container {
+            background: rgba(255, 255, 255, 0.92);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            width: 350px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10;
+        }
+        .header-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header-logo svg {
+            width: 50px;
+            height: 50px;
+            fill: var(--blood-red);
+            animation: heartbeat 1.5s infinite;
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
+        h2 {
+            text-align: center;
+            color: var(--blood-dark);
+            margin: 10px 0 25px;
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+        .search-box input {
+            flex: 1;
+            border: 2px solid var(--blood-red);
+        }
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            border-color: var(--blood-red);
+            box-shadow: 0 0 8px rgba(204, 0, 0, 0.3);
+            outline: none;
+        }
+        /* Style cho trường readonly */
+        input[readonly] {
+            background-color: #f5f5f5;
+            color: #555;
+            cursor: not-allowed;
+            border-color: #ddd;
+        }
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--blood-red), var(--blood-dark));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(204,0,0,0.4);
+        }
+        .btn-print {
+            width: 100%;
+            margin-top: 15px;
+            font-size: 16px;
+            padding: 12px;
+            background: linear-gradient(135deg, #2c3e50, #000000);
+            letter-spacing: 1px;
+        }
+        .btn-print:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+        
+        /* Chữ ký A Product of Handsome Long */
+        .signature-wrapper {
+            position: fixed;
+            bottom: 25px;
+            right: 35px;
+            display: flex;
+            align-items: center;
+            z-index: 100;
+            pointer-events: none;
+        }
+        .signature-text {
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            font-size: 22px;
+            font-weight: 900;
+            /* Màu Vàng đồng Ombre */
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-right: -25px;
+            z-index: 2;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+            white-space: nowrap;
+        }
+        .dragon-svg {
+            width: 100px;
+            height: 100px;
+            animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 8px rgba(253, 245, 169, 0.4));
+            z-index: 1;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        /* Định dạng xuất nhãn in 1.58" x 0.79" */
+        #label-preview {
+            display: none;
+            width: 1.58in;
+            height: 0.79in;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            font-size: 8.5pt;
+            line-height: 1.25;
+            color: black;
+            background: white;
+            margin: 0;
+            padding: 2px 3px;
+        }
+        
+        @media print {
+            @page { size: 1.58in 0.79in; margin: 0; }
+            body { background: none; margin: 0; padding: 0; display: block; }
+            .app-container, .signature-wrapper { display: none; }
+            #label-preview {
+                display: block;
+                page-break-after: always;
+                overflow: hidden;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header-logo">
+            <!-- Vector Giọt Máu / Nhịp tim -->
+            <svg viewBox="0 0 24 24"><path d="M12 21.5C7 16 3 12.5 3 8.5C3 5.5 5.5 3 8.5 3C10.5 3 11.5 4 12 5C12.5 4 13.5 3 15.5 3C18.5 3 21 5.5 21 8.5C21 12.5 17 16 12 21.5ZM12 11L10 15H8L11 9H13L15 13H17L14 7H12V11Z"/></svg>
+        </div>
+        <h2>Blood Bank Label</h2>
+        
+        <div class="form-group">
+            <label>Mã Bệnh Nhân / Mã Túi Máu</label>
+            <div class="search-box">
+                <input type="text" id="maBN" placeholder="Nhập mã...">
+                <button onclick="searchData()" id="btnSearch">TÌM</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Tên Bệnh Nhân</label>
+            <input type="text" id="ten" placeholder="Dữ liệu tự điền..." readonly>
+        </div>
+        <div class="form-group">
+            <label>Ngày sinh</label>
+            <input type="text" id="ngaysinh" placeholder="Dữ liệu tự điền..." readonly>
+        </div>
+        <div class="form-group">
+            <label>Khoa</label>
+            <input type="text" id="khoa" placeholder="Dữ liệu tự điền..." readonly>
+        </div>
+        <div class="form-group">
+            <label>Nhóm máu / Chế phẩm</label>
+            <input type="text" id="nhommau" placeholder="VD: O+, KTCPOOL, KTCKIT..." readonly>
+        </div>
+
+        <button class="btn-print" onclick="preparePrint()">🖨 IN TEM (1.58" x 0.79")</button>
+    </div>
+
+    <!-- Chữ ký cá nhân -->
+    <div class="signature-wrapper">
+        <div class="signature-text">A Product of Handsome Long</div>
+        <!-- Vector Rồng Châu Á (Được cách điệu uốn lượn) -->
+        <svg class="dragon-svg" viewBox="0 0 100 100" fill="url(#gold-grad)">
+            <defs>
+                <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#bf953f" />
+                    <stop offset="30%" style="stop-color:#fcf6ba" />
+                    <stop offset="50%" style="stop-color:#b38728" />
+                    <stop offset="70%" style="stop-color:#fbf5b7" />
+                    <stop offset="100%" style="stop-color:#aa771c" />
+                </linearGradient>
+            </defs>
+            <path d="M70,30 C90,20 95,45 80,60 C65,75 40,65 50,85 C60,105 90,95 85,110 C80,125 50,110 30,120 C10,130 5,100 20,90 C35,80 60,95 55,75 C50,55 25,65 20,45 C15,25 45,15 55,30 Z" stroke="url(#gold-grad)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="translate(0, -15) scale(0.9)"/>
+            <!-- Mắt rồng -->
+            <circle cx="72" cy="30" r="2" fill="#fff"/>
+        </svg>
+    </div>
+
+    <!-- Vùng thực tế in ra giấy -->
+    <div id="label-preview">
+        <b><span id="lbl-ten"></span></b><br>
+        NS: <span id="lbl-ngaysinh"></span><br>
+        Khoa: <span id="lbl-khoa"></span><br>
+        Nhóm: <b><span id="lbl-nhommau"></span></b>
+    </div>
+
+    <script>
+        // BƯỚC 2: DÁN LINK GOOGLE APPS SCRIPT VÀO ĐÂY SAU KHI DEPLOY
+        const API_URL = "YOUR_GOOGLE_APP_SCRIPT_URL_HERE";
+
+        async function searchData() {
+            const maBN = document.getElementById('maBN').value.trim();
+            const btn = document.getElementById('btnSearch');
+            if (!maBN) { alert("Vui lòng nhập mã bệnh nhân / mã túi máu!"); return; }
+
+            btn.innerText = "Đang tìm...";
+            try {
+                if (API_URL === "YOUR_GOOGLE_APP_SCRIPT_URL_HERE") {
+                    alert("⚠️ Bạn chưa cấu hình link API từ Google Sheets. Form đang tải dữ liệu mẫu để thử nghiệm thiết kế.");
+                    fillForm({ 
+                        ten: "NGUYỄN VĂN MẪU", 
+                        ngaysinh: "15/08/1985", 
+                        khoa: "Hồi Sức Tích Cực", 
+                        nhommau: "O+ / KTCPOOL" 
+                    });
+                } else {
+                    let response = await fetch(API_URL + "?id=" + encodeURIComponent(maBN));
+                    let data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        fillForm(data);
+                    } else {
+                        alert("Không tìm thấy dữ liệu cho mã: " + maBN);
+                        clearForm();
+                    }
+                }
+            } catch (error) {
+                alert("Lỗi kết nối máy chủ Google Sheets!");
+            }
+            btn.innerText = "TÌM";
+        }
+
+        function fillForm(data) {
+            document.getElementById('ten').value = data.ten || "";
+            document.getElementById('ngaysinh').value = data.ngaysinh || "";
+            document.getElementById('khoa').value = data.khoa || "";
+            
+            // Đảm bảo hiển thị đầy đủ tên các chế phẩm phức tạp
+            let nhomMauInfo = data.nhommau || "";
+            document.getElementById('nhommau').value = nhomMauInfo;
+        }
+
+        function clearForm() {
+            document.getElementById('ten').value = "";
+            document.getElementById('ngaysinh').value = "";
+            document.getElementById('khoa').value = "";
+            document.getElementById('nhommau').value = "";
+        }
+
+        function preparePrint() {
+            const ten = document.getElementById('ten').value.toUpperCase();
+            if (!ten) { alert("Chưa có dữ liệu để in!"); return; }
+            
+            document.getElementById('lbl-ten').innerText = ten;
+            document.getElementById('lbl-ngaysinh').innerText = document.getElementById('ngaysinh').value;
+            document.getElementById('lbl-khoa').innerText = document.getElementById('khoa').value;
+            document.getElementById('lbl-nhommau').innerText = document.getElementById('nhommau').value;
+            
+            window.print();
+        }
+    </script>
+</body>
+</html>
